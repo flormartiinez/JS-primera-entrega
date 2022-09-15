@@ -1,60 +1,71 @@
 alert ("Bienvenido a nuestro espacio de Armonía");
-let nombre = prompt ("Ingrese su nombre");
+let clientes=[];
+let productos=[];
+let compras=[];
 
-let option = prompt('Elija una opcion de la variedad de productos: 1. Velas 2. Aceites esenciales 3. Lamparas de Sal 4. Jabones');
+let nombre = prompt ("Ingrese su nombre");
+let apellido = prompt ("Ingrese su apellido");
+let nuevoCliente=new cliente(clientes.length,nombre,apellido);
+clientes.push(nuevoCliente);
+
+let velas=new producto(productos.length+1,"Velas",200);
+productos.push(velas);
+let aceite=new producto(productos.length+1,"Aceite Escenciales",300);
+productos.push(aceite);
+let lampara=new producto(productos.length+1,"Lamparas de Sal",800);
+productos.push(lampara);
+let jabon=new producto(productos.length+1,"Jabones",100);
+productos.push(jabon);
+
+let texto="Elija una opcion de la variedad de productos: ";
+for (let index = 0; index < productos.length; index++) {
+    texto += productos[index].id + " - " +productos[index].descripcion + " | ";
+}
+
+let option = prompt(texto);
 calcularCompras (Number(option));
 
 function calcularCompras (option) {
-    let precio = 0;
     let cantidad = 0;
-    switch (option) {
-        case 1: 
-            precio = 200;
-            alert ("el costo de las velas es de $"+precio +" cada una"); 
-            cantidad = prompt("Indique la cantidad que desea comprar");
-            if (Number(cantidad)>0 ){
-                alert (nombre + " el costo total de su compra es: $ "+calcularCostoTotal(precio,Number(cantidad)))
-            } else {
-                alert ("debe seleccionar al menos un producto")
-            }
-            
-        break; 
-        case 2:
-            precio = 300;
-            alert ("el costo de los Aceites es de $"+precio +" cada uno"); 
-            cantidad = prompt("Indique la cantidad que desea comprar");
-            if (Number(cantidad)>0 ){
-                alert (nombre +" el costo total de su compra es: $ "+calcularCostoTotal(precio,Number(cantidad)))
-            } else {
-                alert ("debe seleccionar al menos un producto")
-            }
-        break; 
-        case 3:             
-            precio = 800;
-            alert ("el costo de las Lamparas es de $"+precio +" cada una"); 
-            cantidad = prompt("Indique la cantidad que desea comprar");
-            if (Number(cantidad)>0 ){
-                alert (nombre +" el costo total de su compra es: $ "+calcularCostoTotal(precio,Number(cantidad)))
-            } else {
-                alert ("debe seleccionar al menos un producto")
-            }
-        break;
-        case 4:   
-            precio = 100;
-            alert ("el costo de los Jabones es de $"+precio +" cada uno"); 
-            cantidad = prompt("Indique la cantidad que desea comprar");
-            if (Number(cantidad)>0 ){
-                alert (nombre +"  el costo total de su compra es: $ "+calcularCostoTotal(precio,Number(cantidad)))
-            } else {
-                alert ("debe seleccionar al menos un producto")
-            }
-        break;  
-        default: alert ("la opcion elegida no es valida")
-        break;  
+    let productoBuscado=buscarProducto(option); 
+    if(productoBuscado!=null){
+        alert ("el costo de " +productoBuscado.descripcion + " es de $"+productoBuscado.precio +" cada una"); 
+        cantidad = prompt("Indique la cantidad que desea comprar");
+        if (Number(cantidad)>0 ){
+            alert (nuevoCliente.nombre + " " +nuevoCliente.apellido + " el costo total de su compra es: $ "+calcularCostoTotal(productoBuscado.precio,Number(cantidad)));
+            let nuevaCompra = new compra(nuevoCliente,productoBuscado,cantidad);
+            compras.push(nuevaCompra);
+        } else {
+            alert ("debe seleccionar al menos un producto")
+        }
+    } else{
+        alert ("la opcion elegida no es valida")
     }
 }
 
 function calcularCostoTotal (precio,cantidad){
     return precio * cantidad * 1.22;
 
+}
+
+function cliente (id, nombre, apellido){
+    this.id=id;
+    this.nombre=nombre;
+    this.apellido=apellido;
+}
+function producto(id,descripcion, precio){
+    this.id=id;
+    this.descripcion=descripcion;
+    this.precio=precio;
+}
+function compra(cliente,producto,cantidad){
+    this.cliente=cliente;
+    this.producto=producto;
+    this.cantidad=cantidad;
+}
+function buscarProducto(id){
+    for (let index = 0; index < productos.length; index++) {
+        if(productos[index].id==id)
+            return productos[index];
+    }
 }
